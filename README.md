@@ -1,12 +1,26 @@
-# fav_car_colour
-Using openCV and basics of ML predicting Bangalore's Favorite car Colour.
+# Vehicle Color Vision Pipeline
 
-A image processing project in which multiple images of bangalore's traffic were clicked with each image containing multiple cars. OpenCV was first used to separate the car from the background and then with k- means cluster algorithm to pick out the dominant colour from the cropped image of the car which is infact the colour of the car. Simaliar colours from different images are first mapped to their respective colour using the mapper function and the the reducer program is run to find the total number of cars belonging to a particular colour across all images.
+Generic computer-vision pipeline for vehicle detection/cropping and dominant color extraction.
 
-# Requirements
+## Pipeline Stages
 
-open cv2
-python 2.7+
-anaconda
+1. Ingest: load traffic images.
+2. Detect: isolate vehicles from scene backgrounds.
+3. Extract: run clustering to get dominant color per vehicle.
+4. Aggregate: map raw colors to canonical labels.
+5. Report: count and rank dominant colors across the dataset.
 
+## Repository Layout
 
+- `Removal.py`: preprocessing/background handling.
+- `encoder.py`: feature/color encoding helpers.
+- `mapper.py`: map stage for color grouping.
+- `reducer.py`: reduce stage for final color counts.
+
+## Example Dataset Usage
+
+Use your existing Bangalore traffic image set as example inputs for this pipeline.
+
+## Run
+
+Run scripts in pipeline order (`Removal.py` -> `encoder.py` -> `mapper.py` -> `reducer.py`) according to your local setup.
