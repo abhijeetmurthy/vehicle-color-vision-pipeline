@@ -1,35 +1,39 @@
-grey = "('gray/siver', (127, 127, 127))"
-black = "('black/carbon grey', (0, 0, 0))"
-magenta = "('maroon/red', (150, 50, 60))"
-white = "('white/cream', (255, 255, 255))"
+#!/usr/bin/env python3
+"""Aggregate mapped vehicle colors and print ranking summary."""
 
-f_read = open("fav_colour.txt", "r") 
-li = [[0,"Grey/Silver"],[0,"Black/Carbon grey"],[0,"Maroon/Red"],[0,"White/Cream"]]
-f1 = f_read.readlines()
-for x in f1:
-    if (x[2] == 'g'):
-        li[0][0] += 1
-    elif (x[2] == 'b'):
-        li[1][0] += 1
-    elif (x[2] == 'm'):
-        li[2][0] += 1
-    else:
-        li[3][0] += 1
-# print(li)
+import argparse
+from collections import Counter
+from pathlib import Path
 
-'''
 
-grey -> 0
-black -> 1
-magenta -> 2
-white -> 3
+def main():
+    parser = argparse.ArgumentParser(description="Color reduce stage")
+    parser.add_argument("--input", default="fav_colour.txt", help="Mapped color file")
+    args = parser.parse_args()
 
-'''
-print(li)
-max_index1 = li.index(max(li,key = lambda x: x[0]))
-print(li[max_index1][1]," is the favourite colour of Bangalore with the choice percentage of ",(li[max_index1][0]/541)*100,"%")
-# li[max_index] = 0
-# print(max_index1)
-li.remove(li[max_index1])
-max_index2 = li.index(max(li, key = lambda x: x[0]))
-print(li[max_index2][1]," is the second favourite colour of Bangalore with the choice percentage of ",(li[max_index2][0]/541)*100,"%")
+    input_path = Path(args.input)
+    if not input_path.exists():
+        raise FileNotFoundError(f"Mapped color file not found: {input_path}")
+
+    labels = [line.strip() for line in input_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    if not labels:
+        print("No mapped colors found.")
+        return
+
+    counts = Counter(labels)
+    total = sum(counts.values())
+
+    print("Color distribution:")
+    for color, count in counts.most_common():
+        pct = (count / total) * 100.0
+        print(f"- {color}: {count} ({pct:.2f}%)")
+
+    top_two = counts.most_common(2)
+    if len(top_two) >= 1:
+        print(f"Top color: {top_two[0][0]}")
+    if len(top_two) >= 2:
+        print(f"Second color: {top_two[1][0]}")
+
+
+if __name__ == "__main__":
+    main()
